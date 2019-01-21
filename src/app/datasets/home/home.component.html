@@ -1,0 +1,18 @@
+<mat-card
+  *ngFor="let dataset of datasets$ | async"
+>
+  <mat-card-header>
+    <div mat-card-avatar>
+      <mat-icon color="primary">description</mat-icon>
+    </div>
+    <mat-card-title>{{ dataset.filename }}</mat-card-title>
+    <mat-card-subtitle>{{ dataset.size | fileSize }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-actions>
+    <button mat-stroked-button color="warn" (click)="deleteDataset(dataset)">Delete</button>
+    <a
+      class="view-features"
+      mat-stroked-button color="primary" 
+      [routerLink]="[dataset.id]">View {{ dataset.columns.length }} Features</a>
+  </mat-card-actions>
+</mat-card>

@@ -1,0 +1,27 @@
+import { Component, OnInit, Input } from '@angular/core';
+import { AppState } from 'src/app/reducers';
+import { Store } from '@ngrx/store';
+import { AllDatasetsRequested, DatasetDeleted } from '../datasets.actions';
+import { getAllDatasets } from '../datasets.selectors';
+import { Observable } from 'rxjs';
+import { Dataset } from '../model/dataset';
+
+@Component({
+  selector: 'ds-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss']
+})
+export class HomeComponent implements OnInit {
+  datasets$: Observable<Dataset[]> | null = null;
+
+  constructor(private store: Store<AppState>) {}
+
+  ngOnInit() {
+    this.store.dispatch(new AllDatasetsRequested());
+    this.datasets$ = this.store.select(getAllDatasets);
+  }
+
+  deleteDataset(dataset: Dataset) {
+    this.store.dispatch(new DatasetDeleted(dataset.id));
+  }
+}

@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  align-items: stretch;
+}
+
+mat-vertical-stepper {
+  flex: 1;
+}
+
+input[type=file] {
+  display: none;
+}
+
+.actions {
+  margin-top: 16px;
+}

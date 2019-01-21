@@ -1,0 +1,13 @@
+<label for="fileInput">
+  <a mat-stroked-button>Select CSV / TSV file</a>
+</label>
+
+<input
+  id="fileInput"
+  #fileInput
+  type="file"
+  accept=".csv,.tsv"
+  (change)="filesChanged($event.target.files)"
+>
+
+<span>{{ fileName }}</span>

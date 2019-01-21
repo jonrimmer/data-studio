@@ -1,0 +1,14 @@
+:host {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 24px;
+}
+
+.view-features {
+  margin-left: 8px;
+}
+
+mat-icon {
+  font-size: 38px;
+}

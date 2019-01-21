@@ -1,0 +1,29 @@
+<mat-vertical-stepper
+  [linear]="true"
+  [selectedIndex]="0"
+  #stepper
+>
+  <mat-step
+    label="Choose data file"
+    [stepControl]="fileGroup"
+  >
+    <ds-file-chooser
+      [ngModel]="file"
+      (ngModelChange)="fileSelected($event)"
+    ></ds-file-chooser>
+  </mat-step>
+  <mat-step label="Preview data">
+    <ds-parse-result-viewer
+      [rows]="(filePreview$ | async)?.data"
+      [columns]="columns$ | async"
+      (toggleColumn)="onToggleColumn($event)"
+    ></ds-parse-result-viewer>
+    <div class="actions">
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="saveDataset()"
+      >Save Dataset</button>
+    </div>
+  </mat-step>
+</mat-vertical-stepper>

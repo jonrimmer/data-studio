@@ -1,4 +1,6 @@
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+// Import library functions for theme creation.
+@import '~@angular/material/theming';
+@import 'app/datasets/column-chart/column-chart.theme';
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -7,3 +9,17 @@
 body, html {
   margin: 0;
 }
+
+// Include non-theme styles for core.
+@include mat-core();
+
+// Define your application's custom theme.
+$primary: mat-palette($mat-indigo);
+$accent:  mat-palette($mat-pink, A200, A100, A400);
+$theme: mat-light-theme($primary, $accent);
+
+// Include theme styles for Angular Material components.
+@include angular-material-theme($theme);
+
+// Include theme styles for your custom components.
+@include column-chart($theme);
