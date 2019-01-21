@@ -1,4 +1,6 @@
-import { processCsvFile, StatsProcessor, ChartAndHistogramProcessor } from "./processor";
+import { processCsvFile } from "./processor";
+import { ChartAndHistogramProcessor } from "./ChartAndHistogramProcessor";
+import { StatsProcessor } from "./StatsProcessor";
 import { async } from '@angular/core/testing';
 
 const CSV1 = 

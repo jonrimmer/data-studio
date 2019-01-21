@@ -7,7 +7,10 @@ import { parse } from 'papaparse';
 import { AppState } from 'src/app/reducers';
 import { Store } from '@ngrx/store';
 import { getFile, getColumns } from './new-dataset.selectors';
-import { processCsvFile, StatsProcessor, ChartAndHistogramProcessor, ColumnStats } from 'src/app/processor/processor';
+import { processCsvFile } from 'src/app/processor/processor';
+import { ColumnStats } from "src/app/processor/ColumnStats";
+import { ChartAndHistogramProcessor } from "src/app/processor/ChartAndHistogramProcessor";
+import { StatsProcessor } from "src/app/processor/StatsProcessor";
 import { DatasetSaved } from '../datasets.actions';
 import { ColumnType } from '../model/dataset';
 
