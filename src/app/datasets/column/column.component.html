@@ -1,2 +1,7 @@
-<h3 class="mat-h3">{{ (column$ | async).name }}</h3>
+<h2 class="mat-h2">
+  <a mat-icon-button routerLink="../.." class="back">
+    <mat-icon color="accent">arrow_back</mat-icon>
+  </a>
+  {{ (column$ | async).name }}
+</h2>
 <ds-column-chart [chart]="(column$ | async).chart"></ds-column-chart>

@@ -1,10 +1,22 @@
 :host {
   display: flex;
   flex-direction: column;
-  padding: 24px;
   align-items: stretch;
 }
 
 ds-columns-table {
   flex: 1;
+}
+
+h2 {
+  margin: 0;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 12px;
+
+  .back {
+    margin-right: 8px;
+  }
 }

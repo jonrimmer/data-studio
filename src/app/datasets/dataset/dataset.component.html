@@ -1,1 +1,8 @@
+<h2 class="mat-h2">
+    <a mat-icon-button routerLink=".." class="back">
+      <mat-icon color="accent">arrow_back</mat-icon>
+    </a>
+    {{ title$ | async }}
+  </h2>
+
 <ds-columns-table [columns]="columns$ | async"></ds-columns-table>

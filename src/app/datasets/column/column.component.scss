@@ -1,10 +1,20 @@
 :host {
-  padding: 24px;
+  padding: 12px;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
 ds-column-chart {
+  margin: 12px;
   flex: 1;
+}
+
+h2 {
+  display: flex;
+  align-items: center;
+
+  .back {
+    margin-right: 8px;
+  }
 }
