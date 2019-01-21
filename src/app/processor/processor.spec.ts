@@ -1,4 +1,5 @@
 import { processCsvFile, StatsProcessor, ChartAndHistogramProcessor } from "./processor";
+import { async } from '@angular/core/testing';
 
 const CSV1 = 
 `A,B,C
@@ -25,97 +26,113 @@ const CSV4 =
 
 fdescribe('processCsvFile', () => {
   describe('StatsProcessor', () => {
-    it ('should calculate the stats', () => {
+    it ('should calculate the stats', async () => {
       const stats = new StatsProcessor(3);
-      processCsvFile(CSV1, { hasHeader: true, columns: [0, 1, 2], }, stats);
+      const statsResult = await processCsvFile(CSV1, { hasHeader: true, columns: [0, 1, 2], }, stats).toPromise();
   
-      expect(stats.columns.map(obj => ({...obj}))).toEqual([
+      expect(statsResult.map(obj => ({...obj}))).toEqual([
         {
           index: 0,
           min: 0,
           max: 1,
           avg: 0.5,
-          isAlphanumeric: true,
+          isAlphanumeric: false,
+          isNumeric: true,
           uniqueValues: {
             numeric: 2,
-            alphanumeric: 0
+            alphanumeric: 0,
+            exceededLimit: false
           }
         }, {
           index: 1,
           min: 1,
           max: 1,
           avg: 1,
-          isAlphanumeric: true,
+          isAlphanumeric: false,
+          isNumeric: true,
           uniqueValues: {
             numeric: 1,
-            alphanumeric: 0
+            alphanumeric: 0,
+            exceededLimit: false
           }
         }, {
           index: 2,
           min: 2,
           max: 3,
           avg: 2.5,
-          isAlphanumeric: true,
+          isAlphanumeric: false,
+          isNumeric: true,
           uniqueValues: {
             numeric: 2,
-            alphanumeric: 0
+            alphanumeric: 0,
+            exceededLimit: false
           }
         }
       ]);
     });
   
-    it('should detect non-numeric columns', () => {
+    it('should detect non-numeric columns', async () => {
       const stats = new StatsProcessor(3);
-      processCsvFile(CSV2, { hasHeader: true, columns: [0, 1, 2] }, stats);
+      const statsResult = await processCsvFile(CSV2, { hasHeader: true, columns: [0, 1, 2] }, stats).toPromise();
   
-      expect(stats.columns.map(c => c.isAlphanumeric)).toEqual([true, false, false]);
+      expect(statsResult.map(c => c.isNumeric)).toEqual([true, false, false]);
     });
   
-    it('should skip excluded columns', () => {
+    it('should skip excluded columns', async () => {
       const stats = new StatsProcessor(2);
-      processCsvFile(CSV3, { hasHeader: true, columns: [0, 2]}, stats);
+      const statsResult = await processCsvFile(CSV3, { hasHeader: true, columns: [0, 2]}, stats).toPromise();
   
-      expect(stats.columns.map(c => c.min)).toEqual([0, 2]);
-      expect(stats.columns.map(c => c.max)).toEqual([3, 5]);
-      expect(stats.columns.map(c => c.avg)).toEqual([1.5, 3.5]);
+      expect(statsResult.map(c => c.min)).toEqual([0, 2]);
+      expect(statsResult.map(c => c.max)).toEqual([3, 5]);
+      expect(statsResult.map(c => c.avg)).toEqual([1.5, 3.5]);
     });  
   });
 
   describe('ChartAndHistogramProcessor', () => {
-    it('should collect low-frequency numeric data into independent categories', () => {
+    it('should collect low-frequency numeric data into independent categories', async () => {
       const stats = new StatsProcessor(2);
-      processCsvFile(CSV4, { hasHeader: true, columns: [0, 1]}, stats);
+      const statResult = await processCsvFile(CSV4, { hasHeader: true, columns: [0, 1]}, stats).toPromise();
   
-      const charts = new ChartAndHistogramProcessor(stats.columns);
+      const chartsProcessor = new ChartAndHistogramProcessor(statResult);
   
-      processCsvFile(CSV4, { hasHeader: true, columns: [0, 1]}, charts);
-  
-      expect(Array.from(charts.columns[0].data.entries())).toEqual([
-        ['1', 2],
-        ['2', 3]
-      ]);
-  
-      expect(Array.from(charts.columns[1].data.entries())).toEqual([
-        ['X', 2],
-        ['Y', 2],
-        ['Z', 1]
-      ]);
+      const charts = await processCsvFile(CSV4, { hasHeader: true, columns: [0, 1]}, chartsProcessor).toPromise();
+      
+      expect(charts).toEqual([[
+        {
+          label: '1',
+          value: 2
+        }, {
+          label: '2',
+          value: 3
+        }
+      ], [
+        {
+          label: 'X',
+          value: 2
+        }, {
+          label: 'Y',
+          value: 2
+        }, {
+          label: 'Z',
+          value: 1
+        }
+      ]]);
     });
 
-    fit('should collect high-frequency numeric data into bins', () => {
+    it('should collect high-frequency numeric data into bins', async () => {
       const csv = 'A\n' + Array.from<{}, any>({ length: 101 }, (_, i) => i).join('\n');
       const stats = new StatsProcessor(1);
 
-      processCsvFile(csv, { hasHeader: true, columns: [0] }, stats);
+      const statResult = await processCsvFile(csv, { hasHeader: true, columns: [0] }, stats).toPromise();
 
-      const charts = new ChartAndHistogramProcessor(stats.columns);
+      const chartsProcessor = new ChartAndHistogramProcessor(statResult);
 
-      processCsvFile(csv, { hasHeader: true, columns: [0] }, charts);
+      const charts = await processCsvFile(csv, { hasHeader: true, columns: [0] }, chartsProcessor).toPromise();
 
-      expect(charts.columns[0].data.size).toEqual(20);
+      expect(charts[0].length).toEqual(20);
       
-      Array.from(charts.columns[0].data.entries()).forEach(([ _, value ], i) => {
-        expect(value).toEqual(i === 19 ? 6 : 5);
+      charts[0].forEach((category, i) => {
+        expect(category.value).toEqual(i === 19 ? 6 : 5);
       });
     });
   });  
