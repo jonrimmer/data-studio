@@ -1,0 +1,17 @@
+@import '~@angular/material/theming';
+
+@mixin columns-table($theme) {
+  $accent: map-get($theme, accent);
+  
+  ds-columns-table {
+    tbody {
+      tr {
+        cursor: pointer;
+      }
+
+      tr:hover {
+        background-color: mat-color($accent, 100);
+      }
+    }
+  }
+}

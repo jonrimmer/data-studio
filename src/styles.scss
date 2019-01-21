@@ -1,6 +1,7 @@
 // Import library functions for theme creation.
 @import '~@angular/material/theming';
 @import 'app/datasets/column-chart/column-chart.theme';
+@import 'app/datasets/columns-table/columns-table.theme';
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -23,3 +24,4 @@ $theme: mat-light-theme($primary, $accent);
 
 // Include theme styles for your custom components.
 @include column-chart($theme);
+@include columns-table($theme);
