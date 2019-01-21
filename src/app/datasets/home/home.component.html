@@ -6,13 +6,16 @@
       <mat-icon color="primary">description</mat-icon>
     </div>
     <mat-card-title>{{ dataset.filename }}</mat-card-title>
-    <mat-card-subtitle>{{ dataset.size | fileSize }}</mat-card-subtitle>
+    <mat-card-subtitle>
+      <div>{{ dataset.size | fileSize }}</div>
+      <div>{{ dataset.created | date:'short' }}</div>
+    </mat-card-subtitle>
   </mat-card-header>
   <mat-card-actions>
     <button mat-stroked-button color="warn" (click)="deleteDataset(dataset)">Delete</button>
     <a
       class="view-features"
       mat-stroked-button color="primary" 
-      [routerLink]="[dataset.id]">View {{ dataset.columns.length }} Features</a>
+      [routerLink]="[dataset.id]">{{ dataset.columns.length }} Columns</a>
   </mat-card-actions>
 </mat-card>
