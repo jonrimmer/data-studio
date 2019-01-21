@@ -35,7 +35,7 @@ fdescribe('processCsvFile', () => {
           min: 0,
           max: 1,
           avg: 0.5,
-          isNumeric: true,
+          isAlphanumeric: true,
           uniqueValues: {
             numeric: 2,
             alphanumeric: 0
@@ -45,7 +45,7 @@ fdescribe('processCsvFile', () => {
           min: 1,
           max: 1,
           avg: 1,
-          isNumeric: true,
+          isAlphanumeric: true,
           uniqueValues: {
             numeric: 1,
             alphanumeric: 0
@@ -55,7 +55,7 @@ fdescribe('processCsvFile', () => {
           min: 2,
           max: 3,
           avg: 2.5,
-          isNumeric: true,
+          isAlphanumeric: true,
           uniqueValues: {
             numeric: 2,
             alphanumeric: 0
@@ -68,7 +68,7 @@ fdescribe('processCsvFile', () => {
       const stats = new StatsProcessor(3);
       processCsvFile(CSV2, { hasHeader: true, columns: [0, 1, 2] }, stats);
   
-      expect(stats.columns.map(c => c.isNumeric)).toEqual([true, false, false]);
+      expect(stats.columns.map(c => c.isAlphanumeric)).toEqual([true, false, false]);
     });
   
     it('should skip excluded columns', () => {

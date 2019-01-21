@@ -9,6 +9,11 @@ import { Store } from '@ngrx/store';
 import { getFile, getColumns } from './new-dataset.selectors';
 import { processCsvFile, StatsProcessor, ChartAndHistogramProcessor, ColumnStats } from 'src/app/processor/processor';
 import { DatasetSaved } from '../datasets.actions';
+import { ColumnType } from '../model/dataset';
+
+function getColumnType(stats: ColumnStats): ColumnType {
+  return stats.isAlphanumeric ? ColumnType.Alphanumeric : (stats.isNumeric ? ColumnType.Numeric : ColumnType.Mixed);
+}
 
 @Injectable()
 export class NewDatasetEffects {
@@ -57,13 +62,15 @@ export class NewDatasetEffects {
                   created: Date.now(),
                   columns: columns.filter(c => c.included).map((column, i) => ({
                     name: column.name,
+                    type: getColumnType(stats[i]),
                     stats: {
                       min: stats[i].min,
                       max: stats[i].max,
                       avg: stats[i].avg,
-                      isNumeric: stats[i].isNumeric
+                      uniqueCount: stats[i].uniqueValues.numeric + stats[i].uniqueValues.alphanumeric,
+                      exceededUniqueLimit: stats[i].uniqueValues.exceededLimit
                     },
-                    chart: charts[i].data
+                    chart: charts[i]
                   }))
                 }});
               })

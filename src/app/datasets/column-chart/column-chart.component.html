@@ -9,15 +9,15 @@
 </div>
 <div class="y-axis-label">Frequency</div>
 
-<ng-container *ngFor="let item of data; let i = index">
+<ng-container *ngFor="let item of chart; let i = index">
   <div
     class="bar"
-    [ngStyle]="{ height: yScale(item[1]) + '%', 'grid-area': '1 / ' + (i + 3) }"
+    [ngStyle]="{ height: yScale(item.value) + '%', 'grid-area': '1 / ' + (i + 3) }"
   ></div>
   <div
     class="category-label"
     [ngStyle]="{ 'grid-area': '2 / ' + (i + 3) }"
   >
-    {{ item[0] }}
+    {{ item.label }}
   </div>
 </ng-container>

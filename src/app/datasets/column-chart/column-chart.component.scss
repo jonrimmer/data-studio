@@ -11,7 +11,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-end;
-  padding-right: 8px;
+  padding-right: 10px;
 }
 
 .y-tick {
@@ -19,12 +19,12 @@
   position: relative;
 
   .label {
-    transform: translateY(-9px);
+    transform: translateY(-10px);
   }
 
   &::after {
     position: absolute;
-    right: -8px;
+    right: -11px;
     top: 0;
     content: '';
     border-top: 1px solid #444;

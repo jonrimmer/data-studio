@@ -1,14 +1,23 @@
+export enum ColumnType {
+  Alphanumeric = 'Alphanumeric',
+  Numeric = 'Numeric',
+  Mixed = 'Mixed'
+}
+
 export interface Column {
   name: string;
+  type: ColumnType;
   stats: {
-    isNumeric: boolean;
     min: number;
     max: number;
     avg: number;
-  },
+    uniqueCount: number;
+    exceededUniqueLimit: boolean;
+  };  
   chart: {
-    [key: string]: number
-  }
+    label: string,
+    value: number
+  }[];
 }
 
 export interface Dataset {

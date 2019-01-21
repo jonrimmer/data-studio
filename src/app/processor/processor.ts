@@ -45,7 +45,8 @@ export function processCsvFile<T>(
       complete: () => {
         subscriber.next(processor.finished());
         subscriber.complete();
-      }
+      },
+      skipEmptyLines: true
     });
   });
 }
@@ -55,9 +56,11 @@ export class ColumnStats {
   max = Number.NEGATIVE_INFINITY;
   avg = 0;
   isNumeric = true;
+  isAlphanumeric = true;
   uniqueValues = {
     numeric: 0,
-    alphanumeric: 0
+    alphanumeric: 0,
+    exceededLimit: false
   };
 
   constructor(public index: number) {}
@@ -66,6 +69,8 @@ export class ColumnStats {
     return `Column ${ this.index }: Min(${ this.min}), Max(${ this.max }), Avg(${ this.avg }, Unq(${ this.uniqueValues }))`;
   }
 }
+
+export const UNIQUE_COUNT_LIMIT = 1000;
 
 class Uniques {
   numeric = new Set<string>();
@@ -76,7 +81,7 @@ class Uniques {
   }
 
   add(value: string, isNumeric: boolean) {
-    if (this.size <= 1000) {
+    if (this.size < UNIQUE_COUNT_LIMIT) {
       (isNumeric ? this.numeric : this.alphanumeric).add(value);
     }
   }
@@ -103,6 +108,7 @@ export class StatsProcessor implements Processor<ColumnStats[]> {
       column.min = Math.min(column.min, numValue);
       column.max = Math.max(column.max, numValue);
       column.avg += numValue;
+      column.isAlphanumeric = false;
     }
     else {
       column.isNumeric = false;
@@ -120,7 +126,8 @@ export class StatsProcessor implements Processor<ColumnStats[]> {
       column.avg /= this.total
       column.uniqueValues = {
         alphanumeric: this.uniques[i].alphanumeric.size,
-        numeric: this.uniques[i].numeric.size
+        numeric: this.uniques[i].numeric.size,
+        exceededLimit: this.uniques[i].size >= UNIQUE_COUNT_LIMIT
       }
     });
 
@@ -139,11 +146,22 @@ enum NumericStrategy {
 
 const MAX_CHART_SIZE = 50;
 
+function categoryName(value: string = '[blank]') {
+  return value === '' ? '[blank]' : value;
+}
+
+export type Chart = {
+  label: string;
+  value: number;
+}[];
+
 class ColumnChart {
-  data: { [key: string]: number } = {};
+  categories: {
+    [key: string]: number
+  } = {};
   chartAlphanumeric: boolean;
   numericStrategy: NumericStrategy;
-  bins: string[] = [];
+  bins: Chart = [];
   range = 0;
 
   constructor(
@@ -158,14 +176,15 @@ class ColumnChart {
       this.bins = Array.from({ length: 20 }, (_, i) => {
         const binLowerBound = column.min + (i * (this.range / 20));
         const binUpperBound = column.min + ((i + 1) * (this.range / 20));
-        return Math.round(binLowerBound) + ' - ' + Math.round(binUpperBound);
+        return {
+          label: Math.round(binLowerBound) + ' - ' + Math.round(binUpperBound),
+          value: 0
+        }
       });
     }
   }
 
   addNumeric(value: number) {
-    let name;
-
     if (this.numericStrategy === NumericStrategy.BIN) {
       let binIndex = Math.floor(((value - this.column.min) / this.range) * 20);
 
@@ -173,21 +192,21 @@ class ColumnChart {
         binIndex = 19;
       }
 
-      name = this.bins[binIndex];
+      this.bins[binIndex].value += 1;
     }
     else {
-      name = value.toString();
+      let name = value.toString();
+      this.categories[name] = (this.categories[name] || 0) + 1;
     }
-
-    this.data[name] = (this.data[name] || 0) + 1;
   }
 
   addAlphanumeric(value: string) {
-    this.data[value] = (this.data[value] || 0) + 1;
+    value = categoryName(value);
+    this.categories[value] = (this.categories[value] || 0) + 1;
   }
 }
 
-export class ChartAndHistogramProcessor implements Processor<ColumnChart[]> {
+export class ChartAndHistogramProcessor implements Processor<Chart[]> {
   columns: ColumnChart[];
 
   constructor(private stats: ColumnStats[]) {
@@ -207,7 +226,12 @@ export class ChartAndHistogramProcessor implements Processor<ColumnChart[]> {
   
   row(row: any[]): void {}
 
-  finished(): ColumnChart[] {
-    return this.columns;
+  finished(): Chart[] {
+    return this.columns.map(column => 
+      column.bins.concat(Array.from(Object.entries(column.categories)).map(entry => ({
+        label: entry[0],
+        value: entry[1]
+      })))
+    );
   }
 }

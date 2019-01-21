@@ -8,9 +8,10 @@ import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 })
 export class ColumnChartComponent implements OnChanges {
   @Input()
-  chart: { [key: string]: number} | undefined;
-
-  data: [string, number][] = [];
+  chart: { 
+    label: string;
+    value: number;
+  }[] | undefined;
 
   yScale: (v: number) => number = v => v;
 
@@ -23,12 +24,11 @@ export class ColumnChartComponent implements OnChanges {
 
   ngOnChanges() {
     if (this.chart) {
-      this.data = Object.entries(this.chart);
       this.gridTemplateColumns = 
-        this.sanitizer.bypassSecurityTrustStyle(`30px auto [left] ${ this.data.map(() => '1fr').join(' ') } [right]`);
+        this.sanitizer.bypassSecurityTrustStyle(`30px auto [left] ${ this.chart.map(() => '1fr').join(' ') } [right]`);
       console.log(this.gridTemplateColumns);
 
-      let max = Math.max(...this.data.map(d => d[1]));
+      let max = Math.max(...this.chart.map(d => d.value));
 
       const mag = Math.pow(10, Math.floor(Math.log10(max) - 1));
       max = Math.ceil(max / mag) * mag;

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Column } from '../model/dataset';
+import { Column, ColumnType } from '../model/dataset';
+import { UNIQUE_COUNT_LIMIT } from 'src/app/processor/processor';
 
 @Component({
   selector: 'ds-columns-table',
@@ -10,7 +11,11 @@ export class ColumnsTableComponent implements OnInit {
   @Input()
   columns: Column[] | null = null;
 
-  displayedColumns = ['name', 'min', 'max', 'avg'];
+  ColumnType = ColumnType;
+
+  uniqueLimit: number = UNIQUE_COUNT_LIMIT;
+
+  displayedColumns = ['name', 'type', 'unique', 'min', 'max', 'avg'];
 
   constructor() { }
 
