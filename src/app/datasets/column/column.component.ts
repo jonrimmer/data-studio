@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Data, Params } from '@angular/router';
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { Column } from '../model/dataset';
+import { DatasetsState } from '../datasets.reducer';
+import { Store } from '@ngrx/store';
+import { getColumn } from '../datasets.selectors';
 
 @Component({
   selector: 'ds-column',
@@ -10,16 +11,11 @@ import { Column } from '../model/dataset';
   styleUrls: ['./column.component.scss']
 })
 export class ColumnComponent implements OnInit {
-  column$: Observable<Column> | null = null;;
+  column$: Observable<Column> | null = null;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private store: Store<DatasetsState>) { }
 
   ngOnInit() {
-    this.column$ = combineLatest(
-      this.route.data.pipe(map<Data, Column[]>(data => data.dataset.columns)),
-      this.route.params.pipe(map<Params, number>(params => params.columnId))
-    ).pipe(map(([columns, id]) => {
-      return columns[id];
-    }));
+    this.column$ = this.store.select(getColumn);
   }
 }

@@ -11,7 +11,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { DatasetsEffects } from './datasets.effects';
 import { NewDatasetComponent } from './new-dataset/new-dataset.component';
 import { ParseResultViewerComponent } from './parse-result-viewer/parse-result-viewer.component';
-import { DatasetResolver } from './services/dataset.resolver';
+import { DatasetsGuard } from "./services/datasets.guard";
 import { ColumnComponent } from './column/column.component';
 import { ColumnsTableComponent } from './columns-table/columns-table.component';
 import { DatasetsService } from './services/datasets.service';
@@ -20,22 +20,25 @@ import { ColumnChartComponent } from './column-chart/column-chart.component';
 const ROUTES: Route[] = [
   {
     path: '',
-    component: HomeComponent
-  }, {
-    path: 'new',
-    component: NewDatasetComponent
-  }, {
-    path: ':id',
-    resolve: {
-      dataset: DatasetResolver
-    },
+    canActivate: [DatasetsGuard],
     children: [
       {
         path: '',
-        component: DatasetComponent
+        component: HomeComponent
       }, {
-        path: 'column/:columnId',
-        component: ColumnComponent
+        path: 'new',
+        component: NewDatasetComponent
+      }, {
+        path: ':datasetId',
+        children: [
+          {
+            path: '',
+            component: DatasetComponent
+          }, {
+            path: 'column/:columnId',
+            component: ColumnComponent
+          }
+        ]
       }
     ]
   }
@@ -60,10 +63,8 @@ const ROUTES: Route[] = [
     ColumnChartComponent
   ],
   providers: [
-    DatasetResolver,
+    DatasetsGuard,
     DatasetsService
   ]
 })
-export class DatasetsModule {
-
-}
+export class DatasetsModule {}

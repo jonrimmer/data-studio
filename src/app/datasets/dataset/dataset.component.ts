@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { Column } from '../model/dataset';
-import { map, filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { Dataset } from '../model/dataset';
+import { DatasetsState } from '../datasets.reducer';
+import { Store } from '@ngrx/store';
+import { getDataset } from '../datasets.selectors';
 
 @Component({
   selector: 'ds-dataset',
@@ -10,19 +11,11 @@ import { map, filter } from 'rxjs/operators';
   styleUrls: ['./dataset.component.scss']
 })
 export class DatasetComponent implements OnInit {
-  constructor(private route: ActivatedRoute) { }
+  dataset$: Observable<Dataset> | undefined;
 
-  columns$: Observable<Column[]> | null = null;
-  title$: Observable<string> = of('Loading...');
+  constructor(private store: Store<DatasetsState>) {}
 
   ngOnInit() {
-    this.title$ = this.route.data.pipe(
-      filter(data => !!data),
-      map(data => data.dataset.filename)
-    );
-
-    this.columns$ = this.route.data.pipe(
-      map(data => data.dataset.columns)
-    );
+    this.dataset$ = this.store.select(getDataset);
   }
 }

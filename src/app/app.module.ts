@@ -10,8 +10,8 @@ import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
-import { reducers } from './reducers';
-import { CustomSerializer } from './shared/utils';
+import { reducers } from './store/app.reducers';
+import { CustomSerializer } from './store/custom-serializer';
 
 @NgModule({
   declarations: [

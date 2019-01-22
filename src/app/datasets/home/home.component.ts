@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AllDatasetsRequested, DatasetDeleted } from '../datasets.actions';
+import { DatasetDeleted } from '../datasets.actions';
 import { getAllDatasets } from '../datasets.selectors';
 import { Observable } from 'rxjs';
 import { Dataset } from '../model/dataset';
@@ -17,7 +17,6 @@ export class HomeComponent implements OnInit {
   constructor(private store: Store<DatasetsState>) {}
 
   ngOnInit() {
-    this.store.dispatch(new AllDatasetsRequested());
     this.datasets$ = this.store.select(getAllDatasets);
   }
 

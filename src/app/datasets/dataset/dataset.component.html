@@ -2,7 +2,7 @@
     <a mat-icon-button routerLink=".." class="back">
       <mat-icon color="accent">arrow_back</mat-icon>
     </a>
-    {{ title$ | async }}
+    {{ (dataset$ | async).filename }}
   </h2>
 
-<ds-columns-table [columns]="columns$ | async"></ds-columns-table>
+<ds-columns-table [columns]="(dataset$ | async).columns"></ds-columns-table>
