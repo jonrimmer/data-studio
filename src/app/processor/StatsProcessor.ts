@@ -1,8 +1,7 @@
 import { Processor } from './processor';
 import { Uniques } from "./Uniques";
 import { ColumnStats } from "./ColumnStats";
-
-export const UNIQUE_COUNT_LIMIT = 1000;
+import { UNIQUE_COUNT_LIMIT } from './chart-constants';
 
 export class StatsProcessor implements Processor<ColumnStats[]> {
   columns: ColumnStats[];
@@ -27,7 +26,7 @@ export class StatsProcessor implements Processor<ColumnStats[]> {
     else {
       column.isNumeric = false;
     }
-    
+
     this.uniques[field].add(value, isNumeric);
   }
 

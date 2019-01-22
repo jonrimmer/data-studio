@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Column, ColumnType } from '../model/dataset';
-import { UNIQUE_COUNT_LIMIT } from 'src/app/processor/StatsProcessor';
+import { UNIQUE_COUNT_LIMIT } from 'src/app/processor/chart-constants';
 
 @Component({
   selector: 'ds-columns-table',

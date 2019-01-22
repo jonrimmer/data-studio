@@ -1,0 +1,1 @@
+export const UNIQUE_COUNT_LIMIT = 1000;

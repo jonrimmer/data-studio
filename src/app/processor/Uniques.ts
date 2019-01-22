@@ -1,9 +1,9 @@
-import { UNIQUE_COUNT_LIMIT } from './StatsProcessor';
+import { UNIQUE_COUNT_LIMIT } from './chart-constants';
 
 export class Uniques {
   numeric = new Set<string>();
   alphanumeric = new Set<string>();
-  
+
   get size() {
     return this.numeric.size + this.alphanumeric.size;
   }
