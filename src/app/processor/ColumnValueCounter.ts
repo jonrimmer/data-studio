@@ -1,5 +1,5 @@
 import { ColumnStats } from './ColumnStats';
-import { ContinuousChart } from './chart-types';
+import { ContinuousChart } from '../datasets/model/chart';
 
 export function categoryName(value: string = '[blank]') {
   return value === '' ? '[blank]' : value;
@@ -16,7 +16,7 @@ export class ColumnValueCounter {
   } = {};
   chartAlphanumeric: boolean;
   numericStrategy: NumericStrategy;
-  bins: ContinuousChart[] = [];
+  bins: ContinuousChart = [];
   range = 0;
 
   constructor(private column: ColumnStats) {
