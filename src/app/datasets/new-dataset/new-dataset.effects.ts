@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { NewDatasetActionTypes, LoadFileError, FileChosen, NewDatasetAction, FilePreviewed, CreateDataset } from './new-dataset.actions';
-import { switchMap, mergeMap, withLatestFrom, filter, map } from 'rxjs/operators';
+import { switchMap, mergeMap, withLatestFrom, map, concatMap, finalize } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { parse } from 'papaparse';
 import { AppState } from 'src/app/reducers';
@@ -11,11 +11,42 @@ import { processCsvFile } from 'src/app/processor/processor';
 import { ColumnStats } from "src/app/processor/ColumnStats";
 import { ChartAndHistogramProcessor } from "src/app/processor/ChartAndHistogramProcessor";
 import { StatsProcessor } from "src/app/processor/StatsProcessor";
-import { DatasetSaved } from '../datasets.actions';
-import { ColumnType } from '../model/dataset';
+import { DatasetAdded } from '../datasets.actions';
+import { ColumnType, Dataset } from '../model/dataset';
+import { DatasetsService } from '../services/datasets.service';
+import { Column } from './new-dataset.reducer';
+import { Router } from '@angular/router';
+import { ColumnChart } from '../model/chart';
 
 function getColumnType(stats: ColumnStats): ColumnType {
   return stats.isAlphanumeric ? ColumnType.Alphanumeric : (stats.isNumeric ? ColumnType.Numeric : ColumnType.Mixed);
+}
+
+export function createDataset(
+  id: number,
+  file: File,
+  columns: Column[],
+  stats: ColumnStats[],
+  charts: ColumnChart[]
+): Dataset {
+  return {
+    id,
+    filename: file.name,
+    size: file.size,
+    created: Date.now(),
+    columns: columns.filter(c => c.included).map((column, i) => ({
+      name: column.name,
+      type: getColumnType(stats[i]),
+      stats: {
+        min: stats[i].min,
+        max: stats[i].max,
+        avg: stats[i].avg,
+        uniqueCount: stats[i].uniqueValues.numeric + stats[i].uniqueValues.alphanumeric,
+        exceededUniqueLimit: stats[i].uniqueValues.exceededLimit
+      },
+      chart: charts[i]
+    }))
+  }
 }
 
 @Injectable()
@@ -47,7 +78,7 @@ export class NewDatasetEffects {
       this.store.select(getFile),
       this.store.select(getColumns)
     ),
-    mergeMap(([_, file, columns]) => {
+    concatMap(([_, file, columns]) => {
       if (file && columns) {
         const cols = columns.reduce<number[]>((acc, c, i) => acc.concat(c.included ? [i] : []), []);
         const statsProcessor = new StatsProcessor(cols.length);
@@ -57,25 +88,22 @@ export class NewDatasetEffects {
             const chartProcessor = new ChartAndHistogramProcessor(stats);
 
             return processCsvFile(file, { hasHeader: true, columns: cols}, chartProcessor).pipe(
-              map(charts => {
-                return new DatasetSaved({ dataset: {
-                  id: -1,
-                  filename: file.name,
-                  size: file.size,
-                  created: Date.now(),
-                  columns: columns.filter(c => c.included).map((column, i) => ({
-                    name: column.name,
-                    type: getColumnType(stats[i]),
-                    stats: {
-                      min: stats[i].min,
-                      max: stats[i].max,
-                      avg: stats[i].avg,
-                      uniqueCount: stats[i].uniqueValues.numeric + stats[i].uniqueValues.alphanumeric,
-                      exceededUniqueLimit: stats[i].uniqueValues.exceededLimit
-                    },
-                    chart: charts[i]
-                  }))
-                }});
+              mergeMap(charts => {
+                const id = this.datasetsService.getNextId();
+
+                return of(new DatasetAdded({
+                  dataset: createDataset(
+                    id,
+                    file,
+                    columns,
+                    stats,
+                    charts
+                  ) 
+                })).pipe(
+                  finalize(() => {
+                    this.router.navigate(['/datasets', id]);
+                  })
+                );
               })
             )
           })
@@ -86,5 +114,10 @@ export class NewDatasetEffects {
     })
   );
 
-  constructor(private actions$: Actions, private store: Store<AppState>) {}
+  constructor(
+    private actions$: Actions,
+    private store: Store<AppState>,
+    private datasetsService: DatasetsService,
+    private router: Router
+  ) {}
 }

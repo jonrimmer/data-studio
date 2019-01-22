@@ -1,3 +1,5 @@
+import { ColumnChart } from './chart';
+
 export enum ColumnType {
   Alphanumeric = 'Alphanumeric',
   Numeric = 'Numeric',
@@ -14,10 +16,7 @@ export interface Column {
     uniqueCount: number;
     exceededUniqueLimit: boolean;
   };  
-  chart: {
-    label: string,
-    value: number
-  }[];
+  chart: ColumnChart
 }
 
 export interface Dataset {

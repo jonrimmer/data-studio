@@ -1,29 +1,35 @@
 import { ColumnStats } from './ColumnStats';
-import { NumericStrategy, Chart } from './ChartAndHistogramProcessor';
+import { ContinuousChart } from './chart-types';
 
 export function categoryName(value: string = '[blank]') {
   return value === '' ? '[blank]' : value;
 }
 
-export class ColumnChart {
+export enum NumericStrategy {
+  BIN = 0,
+  CHART = 1
+};
+
+export class ColumnValueCounter {
   categories: {
     [key: string]: number;
   } = {};
   chartAlphanumeric: boolean;
   numericStrategy: NumericStrategy;
-  bins: Chart = [];
+  bins: ContinuousChart[] = [];
   range = 0;
-  
+
   constructor(private column: ColumnStats) {
     this.chartAlphanumeric = column.uniqueValues.alphanumeric <= 200;
     this.numericStrategy = column.uniqueValues.numeric < 20 ? NumericStrategy.CHART : NumericStrategy.BIN;
     if (this.numericStrategy === NumericStrategy.BIN) {
       this.range = column.max - column.min;
       this.bins = Array.from({ length: 20 }, (_, i) => {
-        const binLowerBound = column.min + (i * (this.range / 20));
-        const binUpperBound = column.min + ((i + 1) * (this.range / 20));
+        const lowerBound = column.min + (i * (this.range / 20));
+        const upperBound = column.min + ((i + 1) * (this.range / 20));
         return {
-          label: Math.round(binLowerBound) + ' - ' + Math.round(binUpperBound),
+          lowerBound,
+          upperBound,
           value: 0
         };
       });
