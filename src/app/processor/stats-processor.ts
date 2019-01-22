@@ -1,6 +1,6 @@
 import { Processor } from './processor';
-import { Uniques } from "./Uniques";
-import { ColumnStats } from "./ColumnStats";
+import { Uniques } from './uniques';
+import { ColumnStats } from './column-stats';
 import { UNIQUE_COUNT_LIMIT } from './chart-constants';
 
 export class StatsProcessor implements Processor<ColumnStats[]> {

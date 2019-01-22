@@ -7,15 +7,14 @@ import { parse } from 'papaparse';
 import { Store } from '@ngrx/store';
 import { getFile, getColumns } from './new-dataset.selectors';
 import { processCsvFile } from 'src/app/processor/processor';
-import { ColumnStats } from "src/app/processor/ColumnStats";
-import { ChartAndHistogramProcessor } from "src/app/processor/ChartAndHistogramProcessor";
-import { StatsProcessor } from "src/app/processor/StatsProcessor";
+import { ColumnStats } from 'src/app/processor/column-stats';
+import { StatsProcessor } from 'src/app/processor/stats-processor';
 import { DatasetAdded } from '../datasets.actions';
-import { ColumnType, Dataset } from '../model/dataset';
+import { ColumnType, Dataset, ColumnValues } from '../model/dataset';
 import { DatasetsService } from '../services/datasets.service';
 import { Column, NewDatasetState } from './new-dataset.reducer';
 import { Router } from '@angular/router';
-import { ColumnChart } from '../model/chart';
+import { ColumnValuesProcessor } from 'src/app/processor/column-values-processor';
 
 function getColumnType(stats: ColumnStats): ColumnType {
   return stats.isAlphanumeric ? ColumnType.Alphanumeric : (stats.isNumeric ? ColumnType.Numeric : ColumnType.Mixed);
@@ -26,7 +25,7 @@ export function createDataset(
   file: File,
   columns: Column[],
   stats: ColumnStats[],
-  charts: ColumnChart[]
+  values: ColumnValues[]
 ): Dataset {
   return {
     id,
@@ -43,7 +42,7 @@ export function createDataset(
         uniqueCount: stats[i].uniqueValues.numeric + stats[i].uniqueValues.alphanumeric,
         exceededUniqueLimit: stats[i].uniqueValues.exceededLimit
       },
-      chart: charts[i]
+      values: values[i]
     }))
   }
 }
@@ -84,7 +83,7 @@ export class NewDatasetEffects {
 
         return processCsvFile(file, { hasHeader: true, columns: cols }, statsProcessor).pipe(
           mergeMap(stats => {
-            const chartProcessor = new ChartAndHistogramProcessor(stats);
+            const chartProcessor = new ColumnValuesProcessor(stats);
 
             return processCsvFile(file, { hasHeader: true, columns: cols}, chartProcessor).pipe(
               mergeMap(charts => {

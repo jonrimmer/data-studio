@@ -1,23 +1,40 @@
-<div class="x-axis"></div>
 <div class="y-axis">
   <div
     class="y-tick"
-    *ngFor="let tick of yTicks"
+    *ngFor="let tick of _data?.yTicks"
   >
     <div class="label">{{ tick }}</div>
   </div>
 </div>
-<div class="y-axis-label">Frequency</div>
+<div class="y-axis-label"> {{ _data?.yLabel }}</div>
 
-<ng-container *ngFor="let item of chart; let i = index">
-  <div
-    class="bar"
-    [ngStyle]="{ height: yScale(item.value) + '%', 'grid-area': '1 / ' + (i + 3) }"
-  ></div>
-  <div
-    class="category-label"
-    [ngStyle]="{ 'grid-area': '2 / ' + (i + 3) }"
-  >
-    {{ item.label }}
+<ng-container *ngIf="histogram">
+  <div class="axis histogram-axis">
+    <span class="lower-bound">{{ histogram[0]?.lowerBound }}</span>
+    <span class="upper-bound">{{ histogram[histogram?.length - 1]?.upperBound }}</span>
   </div>
+  <ng-container *ngFor="let bin of _data?.histogram; let i = index">
+    <div
+      class="bar"
+      *ngFor="let value of bin.values"
+      [ngStyle]="{ height: value + '%', 'grid-area': '1 / ' + (i + 3) }"
+    ></div>
+  </ng-container>
+</ng-container>
+
+<ng-container *ngIf="categories">
+  <div class="axis category-axis"></div>
+  <ng-container *ngFor="let category of categories; let i = index">
+    <div
+      class="bar"
+      *ngFor="let value of category.values"
+      [ngStyle]="{ height: value + '%', 'grid-area': '1 / ' + (i + categoryOffset) }"
+    ></div>
+    <div
+      class="category-label"
+      [ngStyle]="{ 'grid-area': '2 / ' + (i + categoryOffset) }"
+    >
+      {{ category.label }}
+    </div>
+  </ng-container>
 </ng-container>

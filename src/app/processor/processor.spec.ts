@@ -1,7 +1,6 @@
-import { processCsvFile } from "./processor";
-import { ChartAndHistogramProcessor } from "./ChartAndHistogramProcessor";
-import { StatsProcessor } from "./StatsProcessor";
-import { async } from '@angular/core/testing';
+import { processCsvFile } from './processor';
+import { ColumnValuesProcessor } from './column-values-processor'
+import { StatsProcessor } from './stats-processor';
 
 const CSV1 = 
 `A,B,C
@@ -95,30 +94,38 @@ fdescribe('processCsvFile', () => {
       const stats = new StatsProcessor(2);
       const statResult = await processCsvFile(CSV4, { hasHeader: true, columns: [0, 1]}, stats).toPromise();
   
-      const chartsProcessor = new ChartAndHistogramProcessor(statResult);
+      const chartsProcessor = new ColumnValuesProcessor(statResult);
   
-      const charts = await processCsvFile(CSV4, { hasHeader: true, columns: [0, 1]}, chartsProcessor).toPromise();
+      const columnValues = await processCsvFile(CSV4, { hasHeader: true, columns: [0, 1]}, chartsProcessor).toPromise();
       
-      expect(charts).toEqual([[
+      expect(columnValues).toEqual([
         {
-          label: '1',
-          value: 2
-        }, {
-          label: '2',
-          value: 3
+          categorical: [
+            {
+              value: '1',
+              frequency: 2
+            }, {
+              value: '2',
+              frequency: 3
+            }
+          ],
+          continuous: []
+        },{
+          categorical: [
+            {
+              value: 'X',
+              frequency: 2
+            }, {
+              value: 'Y',
+              frequency: 2
+            }, {
+              value: 'Z',
+              frequency: 1
+            }
+          ],
+          continuous: []
         }
-      ], [
-        {
-          label: 'X',
-          value: 2
-        }, {
-          label: 'Y',
-          value: 2
-        }, {
-          label: 'Z',
-          value: 1
-        }
-      ]]);
+      ]);
     });
 
     it('should collect high-frequency numeric data into bins', async () => {
@@ -127,14 +134,14 @@ fdescribe('processCsvFile', () => {
 
       const statResult = await processCsvFile(csv, { hasHeader: true, columns: [0] }, stats).toPromise();
 
-      const chartsProcessor = new ChartAndHistogramProcessor(statResult);
+      const chartsProcessor = new ColumnValuesProcessor(statResult);
 
-      const charts = await processCsvFile(csv, { hasHeader: true, columns: [0] }, chartsProcessor).toPromise();
+      const columnValues = await processCsvFile(csv, { hasHeader: true, columns: [0] }, chartsProcessor).toPromise();
 
-      expect(charts[0].length).toEqual(20);
+      expect(columnValues[0].continuous.length).toEqual(20);
       
-      charts[0].forEach((category, i) => {
-        expect(category.value).toEqual(i === 19 ? 6 : 5);
+      columnValues[0].continuous.forEach((category, i) => {
+        expect(category.frequency).toEqual(i === 19 ? 6 : 5);
       });
     });
   });  

@@ -25,3 +25,7 @@ $theme: mat-light-theme($primary, $accent);
 // Include theme styles for your custom components.
 @include column-chart($theme);
 @include columns-table($theme);
+
+body {
+  --dsPrimary100: mat-color(map-get($theme, accent), 100);
+}

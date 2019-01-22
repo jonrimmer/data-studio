@@ -1,7 +1,7 @@
 import { Processor } from './processor';
-import { ColumnValueCounter } from "./ColumnValueCounter";
-import { ColumnStats } from "./ColumnStats";
-import { ColumnChart } from '../datasets/model/chart';
+import { ColumnValuesCounter } from './column-values-counter';
+import { ColumnStats } from './column-stats';
+import { ColumnValues } from '../datasets/model/dataset';
 
 /**
  * CSV processor for building per-column chart/histogram data.
@@ -10,11 +10,11 @@ import { ColumnChart } from '../datasets/model/chart';
  * if there number of unique values is low, otherwise they are collected into a histogram of 20 evenly
  * sized bins between the min and max value found in the column.
  */
-export class ChartAndHistogramProcessor implements Processor<ColumnChart[]> {
-  columns: ColumnValueCounter[];
+export class ColumnValuesProcessor implements Processor<ColumnValues[]> {
+  columns: ColumnValuesCounter[];
 
   constructor(stats: ColumnStats[]) {
-    this.columns = stats.map(stats => new ColumnValueCounter(stats));
+    this.columns = stats.map(stats => new ColumnValuesCounter(stats));
   }
 
   value(field: number, value: any): void {
@@ -29,12 +29,12 @@ export class ChartAndHistogramProcessor implements Processor<ColumnChart[]> {
 
   row(_row: any[]): void { }
 
-  finished(): ColumnChart[] {
+  finished(): ColumnValues[] {
     return this.columns.map(column => ({
       continuous: column.bins,
-      categorical: Array.from(Object.entries(column.categories)).map(([key, value]) => ({
-        label: key,
-        value
+      categorical: Array.from(Object.entries(column.categories)).map(([value, frequency]) => ({
+        value,
+        frequency
       }))
     }));
   }

@@ -41,9 +41,49 @@
   justify-self: start;
 }
 
-.x-axis {
-  grid-area: 2 / left / 2 / right;
+.axis {
+  position: relative;
   border-top: 1px solid #444;
+
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    height: 5px;
+    border-left: 1px solid #444; 
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    display: block;
+    top: 0;
+    right: 0;
+    height: 5px;
+    border-right: 1px solid #444;
+  }
+}
+
+.category-axis {
+  grid-area: 2 / cat-start / 2 / cat-end;
+}
+
+.histogram-axis {
+  display: flex;
+  grid-area: 2 / hist-start / 2 / hist-end;
+  align-items: center;
+
+  .lower-bound {
+    margin: 12px 0;
+    transform: translateX(-3px);
+  }
+
+  .upper-bound {
+    margin: 12px 0 12px auto;
+    transform: translateX(3px);
+  }
 }
 
 .bar {

@@ -1,5 +1,5 @@
-import { ColumnStats } from './ColumnStats';
-import { ContinuousChart } from '../datasets/model/chart';
+import { ColumnStats } from './column-stats';
+import { ContinuousValues } from '../datasets/model/dataset';
 
 export function categoryName(value: string = '[blank]') {
   return value === '' ? '[blank]' : value;
@@ -10,18 +10,19 @@ export enum NumericStrategy {
   CHART = 1
 };
 
-export class ColumnValueCounter {
+export class ColumnValuesCounter {
   categories: {
     [key: string]: number;
   } = {};
   chartAlphanumeric: boolean;
   numericStrategy: NumericStrategy;
-  bins: ContinuousChart = [];
+  bins: ContinuousValues = [];
   range = 0;
 
   constructor(private column: ColumnStats) {
     this.chartAlphanumeric = column.uniqueValues.alphanumeric <= 200;
     this.numericStrategy = column.uniqueValues.numeric < 20 ? NumericStrategy.CHART : NumericStrategy.BIN;
+
     if (this.numericStrategy === NumericStrategy.BIN) {
       this.range = column.max - column.min;
       this.bins = Array.from({ length: 20 }, (_, i) => {
@@ -30,7 +31,7 @@ export class ColumnValueCounter {
         return {
           lowerBound,
           upperBound,
-          value: 0
+          frequency: 0
         };
       });
     }
@@ -42,13 +43,14 @@ export class ColumnValueCounter {
       if (binIndex === 20) {
         binIndex = 19;
       }
-      this.bins[binIndex].value += 1;
+      this.bins[binIndex].frequency += 1;
     }
     else {
       let name = value.toString();
       this.categories[name] = (this.categories[name] || 0) + 1;
     }
   }
+
   addAlphanumeric(value: string) {
     value = categoryName(value);
     this.categories[value] = (this.categories[value] || 0) + 1;

@@ -1,5 +1,3 @@
-import { ColumnChart } from './chart';
-
 export enum ColumnType {
   Alphanumeric = 'Alphanumeric',
   Numeric = 'Numeric',
@@ -16,7 +14,7 @@ export interface Column {
     uniqueCount: number;
     exceededUniqueLimit: boolean;
   };  
-  chart: ColumnChart
+  values: ColumnValues
 }
 
 export interface Dataset {
@@ -25,4 +23,20 @@ export interface Dataset {
   size: number;
   created: number;
   columns: Column[]
+}
+
+export type CategoricalValues = {
+  value: string;
+  frequency: number;
+}[];
+
+export type ContinuousValues = {
+  lowerBound: number;
+  upperBound: number;
+  frequency: number;
+}[];
+
+export interface ColumnValues {
+  categorical: CategoricalValues;
+  continuous: ContinuousValues;
 }

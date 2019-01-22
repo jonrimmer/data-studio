@@ -11,7 +11,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { DatasetsEffects } from './datasets.effects';
 import { NewDatasetComponent } from './new-dataset/new-dataset.component';
 import { ParseResultViewerComponent } from './parse-result-viewer/parse-result-viewer.component';
-import { DatasetsGuard } from "./services/datasets.guard";
+import { DatasetsGuard } from './services/datasets.guard';
 import { ColumnComponent } from './column/column.component';
 import { ColumnsTableComponent } from './columns-table/columns-table.component';
 import { DatasetsService } from './services/datasets.service';
