@@ -4,7 +4,6 @@ import { NewDatasetActionTypes, LoadFileError, FileChosen, NewDatasetAction, Fil
 import { switchMap, mergeMap, withLatestFrom, map, concatMap, finalize } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { parse } from 'papaparse';
-import { AppState } from 'src/app/reducers';
 import { Store } from '@ngrx/store';
 import { getFile, getColumns } from './new-dataset.selectors';
 import { processCsvFile } from 'src/app/processor/processor';
@@ -14,7 +13,7 @@ import { StatsProcessor } from "src/app/processor/StatsProcessor";
 import { DatasetAdded } from '../datasets.actions';
 import { ColumnType, Dataset } from '../model/dataset';
 import { DatasetsService } from '../services/datasets.service';
-import { Column } from './new-dataset.reducer';
+import { Column, NewDatasetState } from './new-dataset.reducer';
 import { Router } from '@angular/router';
 import { ColumnChart } from '../model/chart';
 
@@ -116,7 +115,7 @@ export class NewDatasetEffects {
 
   constructor(
     private actions$: Actions,
-    private store: Store<AppState>,
+    private store: Store<NewDatasetState>,
     private datasetsService: DatasetsService,
     private router: Router
   ) {}

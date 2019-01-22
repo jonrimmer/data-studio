@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AppState } from 'src/app/reducers';
 import { Store } from '@ngrx/store';
 import { AllDatasetsRequested, DatasetDeleted } from '../datasets.actions';
 import { getAllDatasets } from '../datasets.selectors';
 import { Observable } from 'rxjs';
 import { Dataset } from '../model/dataset';
+import { DatasetsState } from '../datasets.reducer';
 
 @Component({
   selector: 'ds-home',
@@ -14,7 +14,7 @@ import { Dataset } from '../model/dataset';
 export class HomeComponent implements OnInit {
   datasets$: Observable<Dataset[]> | null = null;
 
-  constructor(private store: Store<AppState>) {}
+  constructor(private store: Store<DatasetsState>) {}
 
   ngOnInit() {
     this.store.dispatch(new AllDatasetsRequested());

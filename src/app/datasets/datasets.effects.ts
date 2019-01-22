@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Effect, Actions, ofType } from '@ngrx/effects';
 import { DatasetsService } from './services/datasets.service';
 import { DatasetActionTypes, DatasetAdded, AllDatasetsRequested, AllDatasetsLoaded, DatasetDeleted } from './datasets.actions';
-import { map, withLatestFrom, filter, switchMap, finalize } from 'rxjs/operators';
-import { AppState } from '../reducers';
+import { map, withLatestFrom, filter } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { allDatasetsLoaded, getAllDatasets } from './datasets.selectors';
+import { DatasetsState } from './datasets.reducer';
 
 @Injectable()
 export class DatasetsEffects {
@@ -34,6 +34,6 @@ export class DatasetsEffects {
   constructor(
     private actions$: Actions,
     private datasetsService: DatasetsService,
-    private store: Store<AppState>
+    private store: Store<DatasetsState>
     ) {}
 }
