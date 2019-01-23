@@ -72,5 +72,5 @@ export function columnValuesToChartData(values: ColumnValues): ChartData {
 
 export const getColumnChart = createSelector(
   getColumn,
-  column => columnValuesToChartData(column.values)
+  column => column ? columnValuesToChartData(column.values) : null
 )

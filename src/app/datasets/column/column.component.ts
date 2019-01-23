@@ -14,14 +14,12 @@ import { tap } from 'rxjs/operators';
 })
 export class ColumnComponent implements OnInit {
   column$: Observable<Column> | null = null;
-  chartData$?: Observable<ChartData>;
+  chartData$?: Observable<ChartData | null>;
 
   constructor(private store: Store<DatasetsState>) { }
 
   ngOnInit() {
     this.column$ = this.store.select(getColumn);
-    this.chartData$ = this.store.select(getColumnChart).pipe(tap(value => {
-      console.dir(value);
-    }));
+    this.chartData$ = this.store.select(getColumnChart);
   }
 }
