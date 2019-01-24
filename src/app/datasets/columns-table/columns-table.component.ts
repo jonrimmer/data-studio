@@ -1,13 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Column, ColumnType } from '../model/dataset';
 import { UNIQUE_COUNT_LIMIT } from 'src/app/processor/chart-constants';
 
 @Component({
   selector: 'ds-columns-table',
   templateUrl: './columns-table.component.html',
-  styleUrls: ['./columns-table.component.scss']
+  styleUrls: ['./columns-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ColumnsTableComponent implements OnInit {
+export class ColumnsTableComponent {
   @Input()
   columns: Column[] | null = null;
 
@@ -18,8 +19,4 @@ export class ColumnsTableComponent implements OnInit {
   displayedColumns = ['name', 'type', 'unique', 'min', 'max', 'avg'];
 
   constructor() { }
-
-  ngOnInit() {
-  }
-
 }

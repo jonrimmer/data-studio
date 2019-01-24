@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ParseResult } from 'papaparse';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Column } from '../new-dataset/new-dataset.reducer';
 
 @Component({
   selector: 'ds-parse-result-viewer',
   templateUrl: './parse-result-viewer.component.html',
-  styleUrls: ['./parse-result-viewer.component.scss']
+  styleUrls: ['./parse-result-viewer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParseResultViewerComponent {
   @Input()

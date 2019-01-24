@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, HostBinding } from '@angular/core';
+import { Component, Input, OnChanges, HostBinding, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 type Histogram = {
@@ -29,7 +29,8 @@ export interface ChartData {
 @Component({
   selector: 'ds-column-chart',
   templateUrl: './column-chart.component.html',
-  styleUrls: ['./column-chart.component.scss']
+  styleUrls: ['./column-chart.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ColumnChartComponent {
   _data: ChartData | undefined;

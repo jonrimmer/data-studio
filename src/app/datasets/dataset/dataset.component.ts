@@ -10,12 +10,10 @@ import { getDataset } from '../datasets.selectors';
   templateUrl: './dataset.component.html',
   styleUrls: ['./dataset.component.scss']
 })
-export class DatasetComponent implements OnInit {
-  dataset$: Observable<Dataset> | undefined;
+export class DatasetComponent {
+  dataset$: Observable<Dataset>;
 
-  constructor(private store: Store<DatasetsState>) {}
-
-  ngOnInit() {
+  constructor(private store: Store<DatasetsState>) {
     this.dataset$ = this.store.select(getDataset);
   }
 }

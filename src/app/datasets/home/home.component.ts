@@ -11,12 +11,10 @@ import { DatasetsState } from '../datasets.reducer';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
   datasets$: Observable<Dataset[]> | null = null;
 
-  constructor(private store: Store<DatasetsState>) {}
-
-  ngOnInit() {
+  constructor(private store: Store<DatasetsState>) {
     this.datasets$ = this.store.select(getAllDatasets);
   }
 
