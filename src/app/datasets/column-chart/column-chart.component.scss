@@ -67,12 +67,12 @@
 }
 
 .category-axis {
-  grid-area: 2 / cat-start / 2 / cat-end;
+  grid-area: 2 / ccol-start / 2 / ccol-end -1;
 }
 
 .histogram-axis {
   display: flex;
-  grid-area: 2 / hist-start / 2 / hist-end;
+  grid-area: 2 / hcol-start / 2 / hcol-end -1;
   align-items: center;
 
   .lower-bound {

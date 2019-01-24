@@ -17,7 +17,7 @@
     <div
       class="bar"
       *ngFor="let value of bin.values"
-      [ngStyle]="{ height: value + '%', 'grid-area': '1 / ' + (i + 3) }"
+      [ngStyle]="{ height: value + '%', 'grid-area': '1 / hcol-start ' + (i + 1) }"
     ></div>
   </ng-container>
 </ng-container>
@@ -28,11 +28,11 @@
     <div
       class="bar"
       *ngFor="let value of category.values"
-      [ngStyle]="{ height: value + '%', 'grid-area': '1 / ' + (i + categoryOffset) }"
+      [ngStyle]="{ height: value + '%', 'grid-area': '1 / ccol-start ' + (i + 1) }"
     ></div>
     <div
       class="category-label"
-      [ngStyle]="{ 'grid-area': '2 / ' + (i + categoryOffset) }"
+      [ngStyle]="{ 'grid-area': '2 / ccol-start ' + (i + 1) }"
     >
       {{ category.label }}
     </div>

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, HostBinding, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, HostBinding, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 type Histogram = {
@@ -43,27 +43,20 @@ export class ColumnChartComponent {
   set data(value: ChartData) {
     this._data = value;
 
-    let histColumns = '';
+    this.histogram = value.histogram;
+    this.categories = value.categories;
 
-    if (value.histogram && value.histogram.length) {
-      this.histogram = value.histogram;
-      histColumns = 'hist-start] ' + value.histogram.map(() => '1fr').join(' ') + ' [hist-end ';
-      this.categoryOffset = 3 + this.histogram.length;
-    }
-
-    let catColumns = '';
-
-    if (value.categories && value.categories.length) {
-      this.categories = value.categories;
-      catColumns = 'cat-start] ' + value.categories.map(() => '1fr').join(' ') + ' [cat-end';
-    }
+    const templateColumns =
+      '30px auto ' +
+      ((this.histogram && this.histogram.length) ?
+        `repeat(${ this.histogram.length }, [hcol-start] 1fr [hcol-end]) ` : '') +
+      ((this.categories && this.categories.length) ? 
+        `repeat(${ this.categories.length }, [ccol-start] 1fr [ccol-end])` : '');
 
     // The Angular sanitizer will not accept the grid-line names as safe,
     // so we must bypass the sanitizer in order to the binding to work.
     this.gridTemplateColumns = 
-      this.sanitizer.bypassSecurityTrustStyle(
-        `30px auto [left ${ histColumns } ${ catColumns } right]`
-      );
+      this.sanitizer.bypassSecurityTrustStyle(templateColumns);
   }
 
   @HostBinding('style.grid-template-columns')
