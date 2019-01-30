@@ -11,6 +11,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FileSizePipe } from './filesize.pipe';
 
 const DECLARATIONS = [
@@ -29,6 +30,7 @@ const IMPORTS = [
   MatCardModule,
   MatIconModule,
   MatCheckboxModule,
+  MatTooltipModule,
   FormsModule,
   ReactiveFormsModule,
 ]

@@ -20,7 +20,9 @@
     <div
       class="bar"
       *ngFor="let value of bin.values"
-      [ngStyle]="{ height: value + '%', 'grid-area': '1 / hcol-start ' + (i + 1) }"
+      [ngStyle]="{ height: value.height + '%', 'grid-area': '1 / hcol-start ' + (i + 1) }"
+      [matTooltip]="value.frequency | number:'0.0-3'"
+      matTooltipPosition="right"
     ></div>
   </ng-container>
 </ng-container>
@@ -31,7 +33,9 @@
     <div
       class="bar"
       *ngFor="let value of category.values"
-      [ngStyle]="{ height: value + '%', 'grid-area': '1 / ccol-start ' + (i + 1) }"
+      [ngStyle]="{ height: value.height + '%', 'grid-area': '1 / ccol-start ' + (i + 1) }"
+      [matTooltip]="value.frequency | number:'0.0-3'"
+      matTooltipPosition="right"
     ></div>
     <div
       class="category-label"

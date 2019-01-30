@@ -48,13 +48,13 @@ export function columnValuesToChartData(values: ColumnValues): ChartData {
     values.continuous.map(({ lowerBound, upperBound, frequency }) => ({
       lowerBound,
       upperBound,
-      values: [ yScale(frequency) ]
+      values: [ { frequency, height: yScale(frequency) } ]
     })) : null;
 
   const categories = (values.categorical && values.categorical.length) ?
     values.categorical.map(({ value: label, frequency }) => ({
       label,
-      values: [ yScale(frequency) ]
+      values: [ { frequency, height: yScale(frequency) } ]
     })) : null;
   
   return {

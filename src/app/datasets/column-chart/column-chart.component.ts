@@ -1,15 +1,20 @@
 import { Component, Input, HostBinding, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
+type ChartValues = {
+  frequency: number;
+  height: number;
+}[];
+
 type Histogram = {
   lowerBound: number;
   upperBound: number;
-  values: number[];
+  values: ChartValues;
 }[];
 
 type Categories = {
   label: string;
-  values: number[];
+  values: ChartValues;
 }[];
 
 type Ticks = {
