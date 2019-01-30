@@ -15,6 +15,8 @@
 }
 
 .y-tick {
+  grid-area: 1 / 2;
+  padding-right: 12px;
   height: 0;
   position: relative;
 
@@ -24,7 +26,7 @@
 
   &::after {
     position: absolute;
-    right: -11px;
+    right: 0;
     top: 0;
     content: '';
     border-top: 1px solid #444;

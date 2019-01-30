@@ -1,10 +1,13 @@
-<div class="y-axis">
-  <div
-    class="y-tick"
-    *ngFor="let tick of _data?.yTicks"
-  >
-    <div class="label">{{ tick }}</div>
+<div class="y-axis"></div>
+<div
+  class="y-tick"
+  *ngFor="let tick of _data?.yTicks"
+  [style.top.%]="tick.position"
+>
+  <div class="label">
+    {{ tick.value | number:'0.0-3' }}
   </div>
+
 </div>
 <div class="y-axis-label"> {{ _data?.yLabel }}</div>
 

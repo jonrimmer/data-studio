@@ -4,6 +4,7 @@ import * as fromDataset from './datasets.reducer';
 import { getRouterState } from '../store/app.selectors';
 import { ColumnValues } from './model/dataset';
 import { ChartData } from './column-chart/column-chart.component';
+import { scaleLinear } from 'd3-scale';
 
 export const getDatasets = createFeatureSelector<DatasetsState>('datasets');
 
@@ -34,9 +35,14 @@ export function columnValuesToChartData(values: ColumnValues): ChartData {
 
   // Because we are using percentages within a CSS grid to render the chart,
   // we only need to map domain values to the range 0 to 100.
-  const yScale = (v: number) => ((v / yMax) * 100);
+  const yScale = scaleLinear()
+    .domain([0, yMax])
+    .range([0, 100]);
 
-  const yTicks = Array.from({ length: 10 }, (_, i) => Math.round(((9 - i) / 9) * yMax));
+  const yTicks = yScale.ticks(10).map(value => ({
+    value,
+    position: 100 - yScale(value)
+  }));
 
   const histogram = (values.continuous && values.continuous.length) ?
     values.continuous.map(({ lowerBound, upperBound, frequency }) => ({

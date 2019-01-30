@@ -12,13 +12,18 @@ type Categories = {
   values: number[];
 }[];
 
+type Ticks = {
+  value: number;
+  position: number;
+}[];
+
 export interface ChartData {
   series: {
     label: string;
     color: string;
   }[],
   yMax: number;
-  yTicks: number[];
+  yTicks: Ticks;
   yLabel: string;
   xLabel: string;
   columnCount: number;
