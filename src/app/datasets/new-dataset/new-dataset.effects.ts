@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { NewDatasetActionTypes, LoadFileError, FileChosen, NewDatasetAction, FilePreviewed, CreateDataset } from './new-dataset.actions';
-import { switchMap, mergeMap, withLatestFrom, map, concatMap, finalize } from 'rxjs/operators';
+import { switchMap, mergeMap, withLatestFrom, concatMap, finalize } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { parse } from 'papaparse';
 import { Store } from '@ngrx/store';
@@ -11,10 +11,10 @@ import { ColumnStats } from 'src/app/processor/column-stats';
 import { StatsProcessor } from 'src/app/processor/stats-processor';
 import { DatasetAdded } from '../datasets.actions';
 import { ColumnType, Dataset, ColumnValues } from '../model/dataset';
-import { DatasetsService } from '../services/datasets.service';
 import { Column, NewDatasetState } from './new-dataset.reducer';
 import { Router } from '@angular/router';
 import { ColumnValuesProcessor } from 'src/app/processor/column-values-processor';
+import { getNextUnusedId } from '../datasets.selectors';
 
 function getColumnType(stats: ColumnStats): ColumnType {
   return stats.isAlphanumeric ? ColumnType.Alphanumeric : (stats.isNumeric ? ColumnType.Numeric : ColumnType.Mixed);
@@ -74,9 +74,10 @@ export class NewDatasetEffects {
     ofType<CreateDataset>(NewDatasetActionTypes.CreateDataset),
     withLatestFrom(
       this.store.select(getFile),
-      this.store.select(getColumns)
+      this.store.select(getColumns),
+      this.store.select(getNextUnusedId)
     ),
-    concatMap(([_, file, columns]) => {
+    concatMap(([_, file, columns, id]) => {
       if (file && columns) {
         const cols = columns.reduce<number[]>((acc, c, i) => acc.concat(c.included ? [i] : []), []);
         const statsProcessor = new StatsProcessor(cols.length);
@@ -87,8 +88,6 @@ export class NewDatasetEffects {
 
             return processCsvFile(file, { hasHeader: true, columns: cols}, chartProcessor).pipe(
               mergeMap(charts => {
-                const id = this.datasetsService.getNextId();
-
                 return of(new DatasetAdded({
                   dataset: createDataset(
                     id,
@@ -115,7 +114,6 @@ export class NewDatasetEffects {
   constructor(
     private actions$: Actions,
     private store: Store<NewDatasetState>,
-    private datasetsService: DatasetsService,
     private router: Router
   ) {}
 }

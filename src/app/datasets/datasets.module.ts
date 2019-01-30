@@ -11,16 +11,14 @@ import { EffectsModule } from '@ngrx/effects';
 import { DatasetsEffects } from './datasets.effects';
 import { NewDatasetComponent } from './new-dataset/new-dataset.component';
 import { ParseResultViewerComponent } from './parse-result-viewer/parse-result-viewer.component';
-import { DatasetsGuard } from './services/datasets.guard';
+import { DatasetGuard } from './services/dataset.guard';
 import { ColumnComponent } from './column/column.component';
 import { ColumnsTableComponent } from './columns-table/columns-table.component';
-import { DatasetsService } from './services/datasets.service';
 import { ColumnChartComponent } from './column-chart/column-chart.component';
 
 const ROUTES: Route[] = [
   {
     path: '',
-    canActivate: [DatasetsGuard],
     children: [
       {
         path: '',
@@ -30,6 +28,7 @@ const ROUTES: Route[] = [
         component: NewDatasetComponent
       }, {
         path: ':datasetId',
+        canActivate: [DatasetGuard],
         children: [
           {
             path: '',
@@ -63,8 +62,7 @@ const ROUTES: Route[] = [
     ColumnChartComponent
   ],
   providers: [
-    DatasetsGuard,
-    DatasetsService
+    DatasetGuard
   ]
 })
 export class DatasetsModule {}

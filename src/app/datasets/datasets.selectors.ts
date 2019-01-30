@@ -2,12 +2,10 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { DatasetsState } from './datasets.reducer';
 import * as fromDataset from './datasets.reducer';
 import { getRouterState } from '../store/app.selectors';
-import { Column, ColumnValues } from './model/dataset';
+import { ColumnValues } from './model/dataset';
 import { ChartData } from './column-chart/column-chart.component';
 
 export const getDatasets = createFeatureSelector<DatasetsState>('datasets');
-
-export const allDatasetsLoaded = createSelector(getDatasets, state => state.allDatasetsLoaded);
 
 export const getAllDatasets = createSelector(getDatasets, fromDataset.selectAll); 
 export const getDatasetById = (id: number) => createSelector(getDatasets, state => state.entities[id]);
@@ -74,3 +72,13 @@ export const getColumnChart = createSelector(
   getColumn,
   column => column ? columnValuesToChartData(column.values) : null
 )
+
+export const getIds = createSelector(
+  getDatasets,
+  fromDataset.selectIds
+);
+
+export const getNextUnusedId = createSelector(
+  getIds,
+  ids => Math.max(0, ...(ids as number[])) + 1
+);

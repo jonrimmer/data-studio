@@ -2,24 +2,15 @@ import { Action } from '@ngrx/store';
 import { Dataset } from './model/dataset';
 
 export enum DatasetActionTypes {
-  DatasetAdded = '[Datasets API] Dataser Added',
+  AddDataset = '[New Dataset Page] Add Dataset',
   AllDatasetsRequested = '[Datasets API] All Datasets Requested',
   AllDatasetsLoaded = '[Datasets API] All Datasets Loaded',
   DatasetDeleted = '[Datasets API] Dataset Deleted'
 };
 
 export class DatasetAdded implements Action {
-  readonly type = DatasetActionTypes.DatasetAdded;
+  readonly type = DatasetActionTypes.AddDataset;
   constructor(public payload: { dataset: Dataset }) { }
-}
-
-export class AllDatasetsRequested implements Action {
-  readonly type = DatasetActionTypes.AllDatasetsRequested;
-}
-
-export class AllDatasetsLoaded implements Action {
-  readonly type = DatasetActionTypes.AllDatasetsLoaded;
-  constructor (public payload: Dataset[]) { }
 }
 
 export class DatasetDeleted implements Action {
@@ -29,6 +20,4 @@ export class DatasetDeleted implements Action {
 
 export type DatasetActions =
   DatasetAdded
-  | AllDatasetsRequested
-  | AllDatasetsLoaded
   | DatasetDeleted;
