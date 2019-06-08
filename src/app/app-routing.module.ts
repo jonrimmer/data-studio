@@ -8,7 +8,7 @@ const routes: Routes = [
     pathMatch: 'full'
   }, {
     path: 'datasets',
-    loadChildren: './datasets/datasets.module#DatasetsModule'
+    loadChildren: () => import('./datasets/datasets.module').then(m => m.DatasetsModule)
   }
 ];
 

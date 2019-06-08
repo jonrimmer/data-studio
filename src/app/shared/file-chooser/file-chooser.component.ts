@@ -14,7 +14,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ]
 })
 export class FileChooserComponent implements ControlValueAccessor {
-  @ViewChild('fileInput') fileInput!: HTMLInputElement;
+  @ViewChild('fileInput', { static: true }) fileInput!: HTMLInputElement;
 
   constructor() { }
 

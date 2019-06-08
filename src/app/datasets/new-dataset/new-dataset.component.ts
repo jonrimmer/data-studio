@@ -14,7 +14,7 @@ import { ParseResult } from 'papaparse';
   styleUrls: ['./new-dataset.component.scss']
 })
 export class NewDatasetComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild(MatVerticalStepper) stepper!: MatVerticalStepper;
+  @ViewChild(MatVerticalStepper, { static: true }) stepper!: MatVerticalStepper;
 
   reader = new FileReader();
 
