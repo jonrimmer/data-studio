@@ -1,47 +1,26 @@
-import { Action } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import { ParseError, ParseResult } from 'papaparse';
 
-export enum NewDatasetActionTypes {
-  FileChosen = '[New Dataset] File Chosen',
-  FilePreviewed = '[New Dataset] File Previewed',
-  LoadFileError = '[New Dataset] Load File Error',
-  CreateDataset = '[New Dataset] Create Dataset',
-  ClearFile = '[New Dataset] Clear File',
-  ColumnToggled = '[New Dataset] Column Toggled'
-}
+export const fileChosen = createAction(
+  '[New Dataset] File Chosen',
+  props<{ file: File }>()
+);
 
-export class FileChosen implements Action {
-  readonly type = NewDatasetActionTypes.FileChosen;
-  constructor(public payload: File) {}
-}
+export const loadFileError = createAction(
+  '[New Dataset] Load File Error',
+  props<{ error: ParseError }>()
+);
 
-export class LoadFileError implements Action {
-  readonly type = NewDatasetActionTypes.LoadFileError;
-  constructor(public payload: ParseError) {}
-}
+export const filePreviewed = createAction(
+  '[New Dataset] File Previewed',
+  props<{ result: ParseResult }>()
+);
 
-export class FilePreviewed implements Action {
-  readonly type = NewDatasetActionTypes.FilePreviewed;
-  constructor(public payload: ParseResult) { }
-}
+export const createDataset = createAction('[New Dataset] Create Dataset');
 
-export class CreateDataset implements Action {
-  readonly type = NewDatasetActionTypes.CreateDataset;
-}
+export const columnToggled = createAction(
+  '[New Dataset] Column Toggled',
+  props<{ index: number }>()
+);
 
-export class ColumnToggled implements Action {
-  readonly type = NewDatasetActionTypes.ColumnToggled;
-  constructor(public payload: number ) { }
-}
-
-export class ClearFile implements Action {
-  readonly type = NewDatasetActionTypes.ClearFile;
-}
-
-export type NewDatasetAction = 
-  FileChosen
-  | LoadFileError
-  | FilePreviewed
-  | CreateDataset
-  | ColumnToggled
-  | ClearFile;
+export const clearFile = createAction('[New Dataset] Clear File');

@@ -8,7 +8,7 @@ import { scaleLinear } from 'd3-scale';
 
 export const getDatasets = createFeatureSelector<DatasetsState>('datasets');
 
-export const getAllDatasets = createSelector(getDatasets, fromDataset.selectAll); 
+export const getAllDatasets = createSelector(getDatasets, fromDataset.selectAll);
 export const getDatasetById = (id: number) => createSelector(getDatasets, state => state.entities[id]);
 
 export const getDataset = createSelector(
@@ -20,7 +20,7 @@ export const getDataset = createSelector(
 export const getColumn = createSelector(
   getRouterState,
   getDataset,
-  (router, dataset) => dataset.columns[router.state.params.columnId]
+  (router, dataset) => dataset ? dataset.columns[router.state.params.columnId] : null
 );
 
 export function columnValuesToChartData(values: ColumnValues): ChartData {
@@ -29,7 +29,7 @@ export function columnValuesToChartData(values: ColumnValues): ChartData {
     ...values.categorical
   ].map(c => c.frequency));
 
-  // Try to get a 'nicer' value for the y axis by rounding up the 2nd figure. E.g. 115 -> 120. 
+  // Try to get a 'nicer' value for the y axis by rounding up the 2nd figure. E.g. 115 -> 120.
   const mag = Math.pow(10, Math.floor(Math.log10(yMax) - 1));
   yMax = Math.ceil(yMax / mag) * mag;
 
@@ -56,7 +56,7 @@ export function columnValuesToChartData(values: ColumnValues): ChartData {
       label,
       values: [ { frequency, height: yScale(frequency) } ]
     })) : null;
-  
+
   return {
     series: [
       {
@@ -70,14 +70,14 @@ export function columnValuesToChartData(values: ColumnValues): ChartData {
     xLabel: '',
     columnCount: values.categorical.length + values.continuous.length,
     histogram,
-    categories 
-  }
+    categories
+  };
 }
 
 export const getColumnChart = createSelector(
   getColumn,
   column => column ? columnValuesToChartData(column.values) : null
-)
+);
 
 export const getIds = createSelector(
   getDatasets,

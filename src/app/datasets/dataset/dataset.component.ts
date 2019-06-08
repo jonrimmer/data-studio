@@ -11,7 +11,7 @@ import { getDataset } from '../datasets.selectors';
   styleUrls: ['./dataset.component.scss']
 })
 export class DatasetComponent {
-  dataset$: Observable<Dataset>;
+  dataset$: Observable<Dataset | undefined>;
 
   constructor(private store: Store<DatasetsState>) {
     this.dataset$ = this.store.select(getDataset);

@@ -1,6 +1,7 @@
 import { EntityState, createEntityAdapter } from '@ngrx/entity';
 import { Dataset } from './model/dataset';
-import { DatasetActions, DatasetActionTypes } from './datasets.actions';
+import * as DatasetActions from './datasets.actions';
+import { createReducer, on, Action } from '@ngrx/store';
 
 export interface DatasetsState extends EntityState<Dataset> {}
 
@@ -8,15 +9,18 @@ export const adapter = createEntityAdapter<Dataset>();
 
 export const initialState: DatasetsState = adapter.getInitialState();
 
-export function datasetsReducer(state = initialState, action: DatasetActions) {
-  switch(action.type) {
-    case DatasetActionTypes.AddDataset:
-      return adapter.addOne(action.payload.dataset, state);
-    case DatasetActionTypes.DatasetDeleted:
-      return adapter.removeOne(action.payload, state);
-    default:
-      return state;
-  }
+export const datasetsReducer = createReducer(
+  initialState,
+  on(DatasetActions.datasetAdded, (state, { dataset }) =>
+    adapter.addOne(dataset, state)
+  ),
+  on(DatasetActions.datasetDeleted, (state, { id }) =>
+    adapter.removeOne(id, state)
+  )
+);
+
+export function reducer(state: DatasetsState | undefined, action: Action) {
+  return datasetsReducer(state, action);
 }
 
 export const {

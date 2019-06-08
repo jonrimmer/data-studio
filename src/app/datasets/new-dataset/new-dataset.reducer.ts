@@ -1,6 +1,7 @@
-import { NewDatasetAction, NewDatasetActionTypes } from './new-dataset.actions';
+import * as NewDatasetActions from './new-dataset.actions';
 import { ParseResult } from 'papaparse';
 import { ParseError } from '@angular/compiler';
+import { createReducer, on, Action } from '@ngrx/store';
 
 export interface NewDataset {
   file: File | null;
@@ -25,42 +26,34 @@ export const initialState: NewDataset = {
   columns: []
 };
 
-export function newDatasetReducer(state = initialState, action: NewDatasetAction): NewDataset {
-  switch(action.type) {
-    case NewDatasetActionTypes.FileChosen: {
-      return {
-        ...state,
-        file: action.payload
-      }
-    }
-    case NewDatasetActionTypes.FilePreviewed: {
-      return {
-        ...state,
-        filePreview: action.payload,
-        columns: action.payload.meta.fields.map(name => ({ name, included: true }))
-      }
-    }
-    case NewDatasetActionTypes.LoadFileError: {
-      return {
-        ...state,
-      }
-    }
-    case NewDatasetActionTypes.ClearFile: {
-      return {
-        ...state,
-        file: null,
-        filePreview: null,
-        columns: []
-      }
-    }
-    case NewDatasetActionTypes.ColumnToggled: {
-      return {
-        ...state,
-        columns: state.columns.map((c, i) => 
-          (i !== action.payload) ? c : { name: c.name, included: !c.included })
-      }
-    }
-  }
+export const newDatasetReducer = createReducer(
+  initialState,
+  on(NewDatasetActions.fileChosen, (state, { file }) => ({
+    ...state,
+    file
+  })),
+  on(NewDatasetActions.filePreviewed, (state, { result }) => ({
+    ...state,
+    filePreview: result,
+    columns: result.meta.fields.map(name => ({
+      name,
+      included: true
+    }))
+  })),
+  on(NewDatasetActions.clearFile, state => ({
+    ...state,
+    file: null,
+    filePreview: null,
+    columns: []
+  })),
+  on(NewDatasetActions.columnToggled, (state, { index }) => ({
+    ...state,
+    columns: state.columns.map((c, i) =>
+      i !== index ? c : { name: c.name, included: !c.included }
+    )
+  }))
+);
 
-  return state;
+export function reducer(state: NewDataset | undefined, action: Action) {
+  return newDatasetReducer(state, action);
 }

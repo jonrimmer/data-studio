@@ -21,7 +21,7 @@ import { CustomSerializer } from './store/custom-serializer';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    StoreModule.forRoot(reducers, { metaReducers }),
+    StoreModule.forRoot(reducers, { metaReducers, runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true } }),
     EffectsModule.forRoot([]),
     SharedModule,
     StoreRouterConnectingModule.forRoot({stateKey:'router'}),

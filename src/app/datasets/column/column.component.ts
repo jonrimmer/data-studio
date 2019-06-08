@@ -12,7 +12,7 @@ import { ChartData } from '../column-chart/column-chart.component';
   styleUrls: ['./column.component.scss']
 })
 export class ColumnComponent {
-  column$: Observable<Column>;
+  column$: Observable<Column | null>;
   chartData$?: Observable<ChartData | null>;
 
   constructor(private store: Store<DatasetsState>) {

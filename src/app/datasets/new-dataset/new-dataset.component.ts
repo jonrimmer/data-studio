@@ -1,11 +1,22 @@
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  OnDestroy,
+  AfterViewInit
+} from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatVerticalStepper } from '@angular/material/stepper';
 import { NewDatasetState, Column } from './new-dataset.reducer';
 import { Store } from '@ngrx/store';
 import { Subscription, Observable } from 'rxjs';
 import { getFilePreview, getColumns } from './new-dataset.selectors';
-import { FileChosen, CreateDataset, ClearFile, ColumnToggled } from './new-dataset.actions';
+import {
+  fileChosen,
+  createDataset,
+  clearFile,
+  columnToggled
+} from './new-dataset.actions';
 import { ParseResult } from 'papaparse';
 
 @Component({
@@ -40,8 +51,7 @@ export class NewDatasetComponent implements OnInit, AfterViewInit, OnDestroy {
     this.columns$ = this.store.select(getColumns);
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngAfterViewInit(): void {
     this.previewSubscription = this.filePreview$.subscribe(preview => {
@@ -49,8 +59,8 @@ export class NewDatasetComponent implements OnInit, AfterViewInit, OnDestroy {
         this.fileGroup.patchValue({
           filePreviewReady: !!preview
         });
-  
-        if (preview && this.stepper.selectedIndex == 0) {
+
+        if (preview && this.stepper.selectedIndex === 0) {
           this.stepper.next();
         }
       });
@@ -62,22 +72,22 @@ export class NewDatasetComponent implements OnInit, AfterViewInit, OnDestroy {
       this.previewSubscription.unsubscribe();
     }
 
-    this.store.dispatch(new ClearFile());
+    this.store.dispatch(clearFile());
   }
 
   fileSelected(file: File) {
     this.file = file;
 
     if (file) {
-      this.store.dispatch(new FileChosen(file));
+      this.store.dispatch(fileChosen({ file }));
     }
   }
 
   saveDataset() {
-    this.store.dispatch(new CreateDataset());
+    this.store.dispatch(createDataset());
   }
 
   onToggleColumn(index: number) {
-    this.store.dispatch(new ColumnToggled(index));
+    this.store.dispatch(columnToggled({ index }));
   }
 }

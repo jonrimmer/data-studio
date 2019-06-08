@@ -4,8 +4,8 @@ import { StoreModule } from '@ngrx/store';
 import { RouterModule, Route } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { DatasetComponent } from './dataset/dataset.component';
-import { datasetsReducer } from './datasets.reducer';
-import { newDatasetReducer } from './new-dataset/new-dataset.reducer';
+import { reducer as datasetsReducer } from './datasets.reducer';
+import { reducer as newDatasetReducer } from './new-dataset/new-dataset.reducer';
 import { NewDatasetEffects } from './new-dataset/new-dataset.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { DatasetsEffects } from './datasets.effects';
@@ -23,17 +23,20 @@ const ROUTES: Route[] = [
       {
         path: '',
         component: HomeComponent
-      }, {
+      },
+      {
         path: 'new',
         component: NewDatasetComponent
-      }, {
+      },
+      {
         path: ':datasetId',
         canActivate: [DatasetGuard],
         children: [
           {
             path: '',
             component: DatasetComponent
-          }, {
+          },
+          {
             path: 'column/:columnId',
             component: ColumnComponent
           }
@@ -41,7 +44,7 @@ const ROUTES: Route[] = [
       }
     ]
   }
-]
+];
 
 @NgModule({
   imports: [
@@ -61,8 +64,6 @@ const ROUTES: Route[] = [
     ColumnsTableComponent,
     ColumnChartComponent
   ],
-  providers: [
-    DatasetGuard
-  ]
+  providers: [DatasetGuard]
 })
 export class DatasetsModule {}
